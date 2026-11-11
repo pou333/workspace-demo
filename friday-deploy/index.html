@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#141722">
+  <meta name="description" content="Мини-аркада: давим баги тапком, пока они не доползли до прода.">
+  <title>Пятничный деплой</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='8' r='5' fill='%235a0d18'/%3E%3Cellipse cx='16' cy='19' rx='11' ry='10' fill='%23ff4d5e'/%3E%3Cpath d='M16 10v19' stroke='%235a0d18' stroke-width='2'/%3E%3Ccircle cx='11' cy='16' r='2.2' fill='%235a0d18'/%3E%3Ccircle cx='21' cy='16' r='2.2' fill='%235a0d18'/%3E%3Ccircle cx='11.5' cy='23' r='1.8' fill='%235a0d18'/%3E%3Ccircle cx='20.5' cy='23' r='1.8' fill='%235a0d18'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+  <script src="game.js" defer></script>
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <div id="hud" hidden>
+    <div class="hud-left">
+      <div class="score" id="score">0</div>
+      <div class="meta"><span id="sprint">Спринт 1</span><span class="combo" id="combo"></span></div>
+    </div>
+    <div class="hud-right">
+      <div class="uptime">
+        <span class="label">аптайм</span>
+        <div class="bar"><div class="fill" id="uptimeFill"></div></div>
+        <span class="value" id="uptimeText">100.0%</span>
+      </div>
+      <div class="hud-buttons">
+        <button class="chip" id="revertBtn" type="button" title="Откатить всё (пробел)">git revert <span class="charges" id="charges"></span></button>
+        <button class="chip icon" id="pauseBtn" type="button" title="Пауза (P)" aria-label="Пауза">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+        </button>
+        <button class="chip icon" id="muteBtn" type="button" title="Звук (M)" aria-label="Звук"></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="menu">
+    <div class="card">
+      <span class="tag">пятница, 17:59</span>
+      <h1>Пятничный деплой</h1>
+      <p class="lead">Кто-то нажал «Deploy» прямо перед выходными. Баги ползут в прод — дави их тапком, пока аптайм не упал до нуля.</p>
+      <ul class="legend">
+        <li><canvas data-type="bug"></canvas><b>Баг</b><span>один удар тапком</span></li>
+        <li><canvas data-type="hydra"></canvas><b>Размножатор</b><span>пофиксил один — стало два</span></li>
+        <li><canvas data-type="legacy"></canvas><b>Легаси</b><span>медленный, но держит три удара</span></li>
+        <li><canvas data-type="heisen"></canvas><b>Гейзенбаг</b><span>телепортируется, когда к нему тянешься</span></li>
+        <li class="friendly"><canvas data-type="feature"></canvas><b>Фича</b><span>не трогать! пусть едет в прод</span></li>
+      </ul>
+      <p class="controls"><kbd>клик</kbd> / <kbd>тап</kbd> тапком · <kbd>пробел</kbd> git revert · <kbd>P</kbd> пауза · <kbd>M</kbd> звук</p>
+      <button class="btn" id="startBtn" type="button">Начать смену</button>
+      <p class="best" id="menuBest"></p>
+    </div>
+  </div>
+
+  <div class="overlay" id="pause" hidden>
+    <div class="card small">
+      <h2>Пауза</h2>
+      <p class="lead">Стендап затянулся. Баги терпеливо ждут.</p>
+      <button class="btn" id="resumeBtn" type="button">Продолжить</button>
+    </div>
+  </div>
+
+  <div class="overlay" id="over" hidden>
+    <div class="card">
+      <span class="tag danger" id="incidentNo">INC-0000</span>
+      <h2>Прод упал</h2>
+      <p class="postmortem" id="postmortem"></p>
+      <div class="stats">
+        <div><span>Счёт</span><b id="statScore">0</b></div>
+        <div><span>Рекорд</span><b id="statBest">0</b></div>
+        <div><span>Продержался</span><b id="statTime">0:00</b></div>
+        <div><span>Багов раздавлено</span><b id="statSquashed">0</b></div>
+        <div><span>Фич сломано</span><b id="statFeatures">0</b></div>
+        <div><span>Лучшее комбо</span><b id="statCombo">0</b></div>
+      </div>
+      <p class="rank">Звание: <b id="rank">Стажёр</b></p>
+      <p class="newrecord" id="newRecord" hidden>Новый рекорд!</p>
+      <button class="btn" id="restartBtn" type="button">Ещё одна смена</button>
+    </div>
+  </div>
+</body>
+</html>
